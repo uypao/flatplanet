@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body ng-app='myApp'>
+	<div ng-controller="appCtrl as app">
+		<button ng-click="app.onCount()">Increment</button>
+			<span>
+				{{app.count}}
+			</span>
+	</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular.min.js"></script>
+	<script>
+
+	var app = angular.module("myApp", []);
+
+	app.controller("appCtrl", ['countService', function(countService) {
+
+	this.count = 0;
+
+	this.onCount = function(){
+
+		if (this.count <= 10 - 1) {
+			this.count = this.count + 1
+		} else {
+			console.log('cannot exceed to 10');
+		}
+	
+		};
+
+
+	this.getCount = function(){
+		countService.getCount()
+			.then(function(response){
+			this.count = response;
+		}, function(err){			
+			console.log('error on /get');
+		});
+		
+	};
+
+	this.updateCount = function(){
+		countService.updateCount()
+			.then(function(response){
+			this.count = response;
+		}, function(err){			
+			console.log('error on /get');
+		});
+	};
+
+	}]);
+
+	
+
+
+	app.factory('countService', function($http){
+
+		var urlBase = '/api/count';
+    		var dataFactory = {};
+		
+		dataFactory.getCount = function () {
+        		return $http.get(urlBase);
+    		};
+
+		dataFactory.updateCount = function (count) {
+        		return $http.put(urlBase + '/' + count);
+    		};
+
+		return dataFactory;
+	
+	});
+
+
+
+
+	
+
+
+	
+
+
+</script>
+
+  </body>
+</html>
